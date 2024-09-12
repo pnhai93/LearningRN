@@ -68,7 +68,13 @@
           }
         }
       ],
-      "expo-font"
+      "expo-font",
+      [
+        "expo-av",
+        {
+          "microphonePermission": "Allow Flexi Movie to access your microphone."
+        }
+      ]
     ],
     "experiments": {
       "tsconfigPaths": true
