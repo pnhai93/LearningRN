@@ -1,0 +1,122 @@
+// import "./utils/gestureHandler"
+// import "./i18n"
+// import "./utils/ignoreWarnings"
+// import { useFonts } from "expo-font"
+import React from "react"
+// import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context"
+import * as Linking from "expo-linking"
+import { _rootStore, useInitialRootStore } from "../../app/models"
+import { AppNavigator, useNavigationPersistence } from "../navigators"
+// import { ErrorBoundary } from "../../app/screens/ErrorScreen/ErrorBoundary"
+import * as storage from "../../app/utils/storage"
+// import { customFontsToLoad } from "../../app/theme"
+// import Config from "../../app/config"
+// import { Platform, UIManager } from "react-native"
+// import { LoadingAndError } from "../../app/components/LoadingAndError/LoadingAndError"
+// import auth from "@react-native-firebase/auth"
+
+export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
+
+// Web linking configuration
+const prefix = Linking.createURL("/")
+const config = {
+  screens: {
+    Login: {
+      path: "",
+    },
+    Welcome: "welcome",
+    Demo: {
+      screens: {
+        DemoShowroom: {
+          path: "showroom/:queryIndex?/:itemIndex?",
+        },
+        DemoDebug: "debug",
+        DemoPodcastList: "podcast",
+        DemoCommunity: "community",
+      },
+    },
+  },
+}
+
+interface AppProps {
+  // hideSplashScreen: () => Promise<boolean>
+}
+
+/**
+ * This is the root component of our app.
+ * @param {AppProps} props - The props for the `App` component.
+ * @returns {JSX.Element} The rendered `App` component.
+ */
+function AppWeb(props: AppProps) {
+  // const { hideSplashScreen } = props
+  const {
+    initialNavigationState,
+    onNavigationStateChange,
+    isRestored: isNavigationStateRestored,
+  } = useNavigationPersistence(storage, NAVIGATION_PERSISTENCE_KEY)
+
+  // const [areFontsLoaded, fontLoadError] = useFonts(customFontsToLoad)
+
+  // const { rehydrated } = useInitialRootStore(() => {
+  // This runs after the root store has been initialized and rehydrated.
+  // If your initialization scripts run very fast, it's good to show the splash screen for just a bit longer to prevent flicker.
+  // Slightly delaying splash screen hiding for better UX; can be customized or removed as needed,
+  // Note: (vanilla Android) The splash-screen will not appear if you launch your app via the terminal or Android Studio. Kill the app and launch it normally by tapping on the launcher icon. https://stackoverflow.com/a/69831106
+  // Note: (vanilla iOS) You might notice the splash-screen logo change size. This happens in debug/development mode. Try building the app for release.
+  // setTimeout(hideSplashScreen, 500)
+  // })
+
+  // React.useEffect(() => {
+  //   if (Platform.OS === "android") {
+  //     if (UIManager.setLayoutAnimationEnabledExperimental) {
+  //       UIManager.setLayoutAnimationEnabledExperimental(true)
+  //     }
+  //   }
+  // }, [])
+
+  // -------------firebase-------------
+  // Handle user state changes
+  // function onAuthStateChanged(user: any) {
+  //   console.log("Auth changed", user)
+  //   _rootStore.userStore.saveProfile(user)
+  // }
+
+  // React.useEffect(() => {
+  //   const subscriber = auth().onAuthStateChanged(onAuthStateChanged)
+  //   return subscriber // unsubscribe on unmount
+  // }, [])
+  // -------------end firebase-------------
+
+  // Before we show the app, we have to wait for our state to be ready.
+  // In the meantime, don't render anything. This will be the background
+  // color set in native by rootView's background color.
+  // In iOS: application:didFinishLaunchingWithOptions:
+  // In Android: https://stackoverflow.com/a/45838109/204044
+  // You can replace with your own loading component if you wish.
+  // if (!rehydrated || !isNavigationStateRestored || (!areFontsLoaded && !fontLoadError)) {
+  //   return null
+  // }
+
+  const linking = {
+    prefixes: [prefix],
+    config,
+  }
+
+  // otherwise, we're ready to render the app
+  return (
+    <>
+      {/* // <SafeAreaProvider initialMetrics={initialWindowMetrics}> */}
+      {/* <ErrorBoundary catchErrors={Config.catchErrors}> */}
+      <AppNavigator
+        linking={linking}
+        initialState={initialNavigationState}
+        onStateChange={onNavigationStateChange}
+      />
+      {/* </ErrorBoundary> */}
+      {/* <LoadingAndError /> */}
+      {/* </SafeAreaProvider> */}
+    </>
+  )
+}
+
+export default AppWeb

@@ -11,6 +11,8 @@ import {
 import { isRTL, translate } from "../i18n"
 import { colors, spacing, typography } from "../theme"
 import { Text, TextProps } from "./Text"
+import { Control, useController } from "react-hook-form"
+import { IconButton } from "./Button/IconButton"
 
 export interface TextFieldAccessoryProps {
   style: StyleProp<any>
@@ -95,6 +97,12 @@ export interface TextFieldProps extends Omit<TextInputProps, "ref"> {
    * Note: It is a good idea to memoize this.
    */
   LeftAccessory?: ComponentType<TextFieldAccessoryProps>
+
+  control: Control<any, any>
+  name: string
+  changeText?: () => void
+  defaultValue?: string
+  isPassword?: boolean
 }
 
 /**
@@ -122,6 +130,11 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
     style: $inputStyleOverride,
     containerStyle: $containerStyleOverride,
     inputWrapperStyle: $inputWrapperStyleOverride,
+    control,
+    name,
+    changeText,
+    defaultValue,
+    isPassword,
     ...TextInputProps
   } = props
   const input = useRef<TextInput>(null)
@@ -170,6 +183,23 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
 
   useImperativeHandle(ref, () => input.current as TextInput)
 
+  const [secureTextEntry, setSecureTextEntry] = React.useState(isPassword)
+
+  const { field } = useController({
+    control,
+    defaultValue: defaultValue || "",
+    name,
+  })
+
+  const onChangeText = (text: string) => {
+    field.onChange(text)
+    changeText && changeText()
+  }
+
+  const onSeePassword = () => {
+    setSecureTextEntry((secureTextEntry) => !secureTextEntry)
+  }
+
   return (
     <TouchableOpacity
       activeOpacity={1}
@@ -199,6 +229,7 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
         )}
 
         <TextInput
+          value={field.value}
           ref={input}
           underlineColorAndroid={colors.transparent}
           textAlignVertical="top"
@@ -207,7 +238,18 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
           {...TextInputProps}
           editable={!disabled}
           style={$inputStyles}
+          onChangeText={onChangeText}
+          secureTextEntry={secureTextEntry}
         />
+
+        {isPassword && field.value.length > 0 && (
+          <IconButton
+            icon={secureTextEntry ? "eye_off" : "eye"}
+            onPress={onSeePassword}
+            size={24}
+            style={$eye}
+          />
+        )}
 
         {!!RightAccessory && (
           <RightAccessory
@@ -235,6 +277,7 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
 
 const $labelStyle: TextStyle = {
   marginBottom: spacing.xs,
+  color: colors.palette.neutral100,
 }
 
 const $inputWrapperStyle: ViewStyle = {
@@ -262,7 +305,7 @@ const $inputStyle: TextStyle = {
 }
 
 const $helperStyle: TextStyle = {
-  marginTop: spacing.xs,
+  // marginTop: spacing.xs,
 }
 
 const $rightAccessoryStyle: ViewStyle = {
@@ -276,4 +319,9 @@ const $leftAccessoryStyle: ViewStyle = {
   height: 40,
   justifyContent: "center",
   alignItems: "center",
+}
+
+const $eye: ViewStyle = {
+  alignSelf: "center",
+  marginHorizontal: 8,
 }

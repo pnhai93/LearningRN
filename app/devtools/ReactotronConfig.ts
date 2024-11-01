@@ -15,6 +15,7 @@ import { goBack, resetRoot, navigate } from "app/navigators/navigationUtilities"
 import { Reactotron } from "./ReactotronClient"
 
 const reactotron = Reactotron.configure({
+  host: "localhost", // server ip
   name: require("../../package.json").name,
   onConnect: () => {
     /** since this file gets hot reloaded, let's clear the past logs every time we connect */

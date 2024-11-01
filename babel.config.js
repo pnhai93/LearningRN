@@ -5,7 +5,7 @@ const plugins = [
   [
     "module-resolver",
     {
-      root: ["./app"],
+      root: ["./app", "./web"],
       extensions: [".ios.js", ".android.js", ".js", ".ts", ".tsx", ".json"],
     },
   ],

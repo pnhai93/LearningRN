@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "450232383761",
+    "project_id": "flexi-movie",
+    "storage_bucket": "flexi-movie.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:450232383761:android:3e4160604a764b3423b4b0",
+        "android_client_info": {
+          "package_name": "com.fleximovie"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIJT-qwsiNIGEnLRTJ1AJ2INVUEeQWcuU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

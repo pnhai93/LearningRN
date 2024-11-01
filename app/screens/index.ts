@@ -1,3 +1,11 @@
 export * from "./WelcomeScreen"
 export * from "./ErrorScreen/ErrorBoundary"
 // export other screens here
+export * from "./VideoPlaying/VideoPlaying"
+export * from "./Home/Home"
+export * from "./SearchMovie/SearchMovie"
+export * from "./MovieDetail/MovieDetail"
+export * from "./AddVideo/AddVideo"
+export * from "./Authentication/Login"
+export * from "./Authentication/Register"
+export * from "./Authentication/Profile"

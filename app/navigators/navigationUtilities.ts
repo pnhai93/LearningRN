@@ -173,7 +173,7 @@ export function useNavigationPersistence(storage: Storage, persistenceKey: strin
  * @param {unknown} name - The name of the route to navigate to.
  * @param {unknown} params - The params to pass to the route.
  */
-export function navigate(name: unknown, params?: unknown) {
+export function navigate(name: keyof AppStackParamList, params?: unknown) {
   if (navigationRef.isReady()) {
     // @ts-expect-error
     navigationRef.navigate(name as never, params as never)
@@ -202,5 +202,12 @@ export function resetRoot(
 ) {
   if (navigationRef.isReady()) {
     navigationRef.resetRoot(state)
+  }
+}
+
+export function navigatePush(name: keyof AppStackParamList, params?: unknown) {
+  if (navigationRef.isReady()) {
+    // @ts-expect-error
+    navigationRef.push(name as never, params as never)
   }
 }

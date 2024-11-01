@@ -23,12 +23,15 @@ import { useFonts } from "expo-font"
 import React from "react"
 import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context"
 import * as Linking from "expo-linking"
-import { useInitialRootStore } from "./models"
+import { _rootStore, useInitialRootStore } from "./models"
 import { AppNavigator, useNavigationPersistence } from "./navigators"
 import { ErrorBoundary } from "./screens/ErrorScreen/ErrorBoundary"
 import * as storage from "./utils/storage"
 import { customFontsToLoad } from "./theme"
 import Config from "./config"
+import { Platform, UIManager } from "react-native"
+import { LoadingAndError } from "./components/LoadingAndError/LoadingAndError"
+import auth from "@react-native-firebase/auth"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 
@@ -82,6 +85,27 @@ function App(props: AppProps) {
     setTimeout(hideSplashScreen, 500)
   })
 
+  React.useEffect(() => {
+    if (Platform.OS === "android") {
+      if (UIManager.setLayoutAnimationEnabledExperimental) {
+        UIManager.setLayoutAnimationEnabledExperimental(true)
+      }
+    }
+  }, [])
+
+  // -------------firebase-------------
+  // Handle user state changes
+  function onAuthStateChanged(user: any) {
+    console.log("Auth changed", user)
+    _rootStore.userStore.saveProfile(user)
+  }
+
+  React.useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged)
+    return subscriber // unsubscribe on unmount
+  }, [])
+  // -------------end firebase-------------
+
   // Before we show the app, we have to wait for our state to be ready.
   // In the meantime, don't render anything. This will be the background
   // color set in native by rootView's background color.
@@ -107,6 +131,7 @@ function App(props: AppProps) {
           onStateChange={onNavigationStateChange}
         />
       </ErrorBoundary>
+      <LoadingAndError />
     </SafeAreaProvider>
   )
 }
